@@ -1,10 +1,11 @@
 'use strict';
 
 // Timesheets controller
-angular.module('timesheets').controller('TimesheetsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Timesheets',
-	function($scope, $stateParams, $location, Authentication, Timesheets) {
+angular.module('timesheets').controller('TimesheetsController', ['$scope', '$rootScope', '$stateParams', '$location', 'Authentication', 'Timesheets',
+	function($scope, $rootScope, $stateParams, $location, Authentication, Timesheets) {
 		$scope.authentication = Authentication;
-       
+        
+        
 		// Create new Timesheet
 		$scope.create = function(sheet) {
 			// Create new Timesheet object
@@ -21,7 +22,13 @@ angular.module('timesheets').controller('TimesheetsController', ['$scope', '$sta
                 note:this.timesheet.note
 			});
             */
-            var timesheet = new Timesheets({name:sheet.name, project:sheet.name, startTime:sheet.startTime, endTime:sheet.endTime, note:sheet.note});
+            var timesheet = new Timesheets({
+                                    name:sheet.name, 
+                                    project:sheet.name,
+                                    startTime:sheet.startTime,
+                                    endTime:sheet.endTime,
+                                    note:sheet.note
+                                    });
 
 			// Redirect after save
 			timesheet.$save(function(response) {
@@ -56,7 +63,7 @@ angular.module('timesheets').controller('TimesheetsController', ['$scope', '$sta
 		$scope.update = function() {
 			var timesheet = $scope.timesheet;
 
-			timesheet.$update(function() {
+			    timesheet.$update(function() {
 				$location.path('timesheets/' + timesheet._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
@@ -65,7 +72,25 @@ angular.module('timesheets').controller('TimesheetsController', ['$scope', '$sta
 
 		// Find a list of Timesheets
 		$scope.find = function() {
-			$scope.timesheets = Timesheets.query();
+			$scope.timesheets = Timesheets.query(function () {
+                
+                           $rootScope.dataSource = [];
+                            for (var i = 0; i < $scope.timesheets.length; i++) {
+                
+                            var tmp = $scope.timesheets[i];
+                            $scope.dataSource.push(
+                                            {
+                                                title:tmp.name,
+                                                start:tmp.startTime,
+                                                end:tmp.endTime
+                                            }
+                            );
+                           
+                        }
+                    $rootScope.calendar();
+            });
+            
+ 
 		};
 
 		// Find existing Timesheet
