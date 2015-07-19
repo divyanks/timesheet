@@ -8,5 +8,8 @@ angular.module('timesheets').run(['Menus','$rootScope',
 		Menus.addSubMenuItem('topbar', 'timesheets', 'List Timesheets', 'timesheets');
 		Menus.addSubMenuItem('topbar', 'timesheets', 'New Timesheet', 'timesheets/create');
         $rootScope.dataSource = [];
+        //Day wise events array eg: dayEvent[205] = []; represensts events occuring on 24 july of the year
+        $rootScope.dayEvents = []; 
+        $rootScope.preferredNumberSeconds = 4*60*60;
 	}
 ]);

@@ -69,7 +69,30 @@ angular.module('timesheets').controller('TimesheetsController', ['$scope', '$roo
 				$scope.error = errorResponse.data.message;
 			});
 		};
+//Prepares/Populates dayEvents from dataSource (required to pass to fullcalendar)
+ $rootScope.arrangeMomentsDate= function() {
 
+            console.log($rootScope.dataSource);                                            
+
+            var maxEvents = $rootScope.dataSource.length;
+            for(var i = 0; i < maxEvents; i++) {
+                var day = $rootScope.dataSource[i].end.dayOfYear();
+                var  tmp = $rootScope.dataSource[i];
+                if($rootScope.dayEvents[day] === undefined) {
+                    $rootScope.dayEvents[day] = [];
+                    $rootScope.dayEvents[day].push(tmp); 
+                   
+                }
+                else {
+                    $rootScope.dayEvents[day].push(tmp);
+                   
+                }   
+            }
+  
+            console.log($rootScope.dayEvents);
+
+    
+};
 		// Find a list of Timesheets
 		$scope.find = function() {
 			$scope.timesheets = Timesheets.query(function () {
@@ -81,15 +104,16 @@ angular.module('timesheets').controller('TimesheetsController', ['$scope', '$roo
                             $scope.dataSource.push(
                                             {
                                                 title:tmp.name,
-                                                start:tmp.startTime,
-                                                end:tmp.endTime
+                                                start:moment(tmp.startTime),
+                                                end:moment(tmp.endTime),
+                                                
                                             }
                             );
                            
-                        }
+                        }                
+                    $rootScope.arrangeMomentsDate();
                     $rootScope.calendar();
-            });
-            
+            });            
  
 		};
 
