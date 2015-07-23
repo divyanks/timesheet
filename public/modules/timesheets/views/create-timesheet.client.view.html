@@ -1,62 +1,134 @@
+
+</style>
+<section data-ng-controller="TimesheetsController">
+    <div class="page-header">
+        <h1>Tabular Timesheet</h1>
+    </div>
+    <div style ="margin-bottom: 100px;">
+        <form class="form-horizontal" data-ng-submit="create(timesheet)" novalidate>
+            <table class="table table-striped" >
+                <th>
+                    Project
+                </th>
+                 <th>
+                    Notes
+                </th>
+                <th>
+                    Start Time
+                </th>
+                <th>
+                    End Time
+                </th>
+        
+                <tr>
+                    <td>
+                            <div class="controls" style="margin-top: 10px;size=80px">
+                                <input data-ng-model="timesheet.project" id="project" placeholder="Project" required>
+                            </div>
+                    </td>
+                    <td>
+                              <div class="controls" style="margin-top: 10px;">
+                                <input data-ng-model="timesheet.note" id="project" placeholder="Note" required>
+                            </div>
+                      
+                    </td>
+                    <td>    
+                        
+                        <div class="dropdown col-xs-6" style="margin-top: 10px;">
+                              <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+                                <div class="input-group">
+                                        
+                                <input  class="form-control" data-ng-model="timesheet.start" size="20">
+                                        
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                </div>
+                              </a>
+                              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <datetimepicker data-ng-model="timesheet.start" data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"/>
+                              </ul>
+                        </div>
+                    </td>
+                    <td>
+                       
+                        <div class="dropdown col-xs-6" style="margin-top: 10px;">
+                              <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+                                <div class="input-group">
+                                        
+                                <input type="text" class="form-control" data-ng-model="timesheet.end" >
+                                        
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                </div>
+                              </a>
+                              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <datetimepicker data-ng-model="timesheet.end" data-datetimepicker-config="{ dropdownSelector:
+                                                                                                          '#dropdown2' }"/>
+                              </ul>
+                        </div>                        
+                 
+                    </td>
+
+                </tr>       
+
+            </table>
+                
+                <input type="submit" class="btn btn-default">
+       
+	        </form>
+    </div>
+    </section>
+
+ 
+    <div class="controls" style="margin-top: 10px;">
+             <input data-ng-model="preferredHours"  placeholder="preferredHours" required>
+    </div>
 <style>
-.the-table {
-    table-layout: fixed;
-    word-wrap: break-word;
+.markRed {
+border-color:  !important;
 }
     
     
 </style>
-<section data-ng-controller="TimesheetsController">
-    <div class="page-header">
-        <h1>New Timesheet</h1>
-    </div>
-    <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="create(timesheet)" novalidate>
-            <table class="the-table">
-                <tr>
-                    <td>
-                        <div class="form-group">
-                            <label class="control-label" for="name" >Name</label>
-                            <div  style="width: 100%;">
-                                <input type="text" data-ng-model="name" id="name"  placeholder="Dummy to be removed later" required>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <label class="control-label" for="name">Project</label>
-                            <div class="controls">
-                                <input type="text" data-ng-model="timesheet.project" id="project" placeholder="Project" required>
-                            </div>
-                        </div>
-                    </td>
+<section class="row">
+<div data-ng-controller="TimesheetsController" data-ng-init="find()" style ="margin-top: 100px;">
+       <label>Search: <input ng-model="searchText"></label>
+		  <table class="table " >
+              <tr>
+                    <th>User
+                    </th>
+                    <th>Project
+                    </th>                 
+                    <th>Start Time
+                    </th>
+                  <th>End Time
+                    </th>
+                  <th>Duration (hours)
+                    </th>
+                  <th>Notes
+                    </th>
+                    <th>
+                    </th>
+                    <th>
+                    </th>
 
-                    <td>
-                        <div class="form-group">
-                            <label class="control-label" for="date">Date</label>
-                            <div class="controls">
-                                <input type="text" data-ng-model="timesheet.date" id="name" placeholder="Date" required>
-                            </div>
-                        </div>
-                    </td>
-
-                    <td>
-                        <div class="form-group">
-                            <label class="control-label" for="notes">Notes</label>
-                            <div class="controls">
-                                <input type="text" data-ng-model="timesheet.note" id="label"  placeholder="Notes" required>
-                            </div>
-                        </div>
-                    </td>
-                </tr>                
+                </tr>
+              <tr   ng-repeat="timesheet in gSheets |  filter:searchText" 
+                                    ng-class="{'markRed': eventDay[moment(timesheet.endTime).dayOfYear()] > preferredHours}" >
+                <td ng-bind="timesheet.user.displayName"></td>
+                <td data-ng-bind="timesheet.name"></td>
+                
+                  <td data-ng-bind="timesheet.startTime"></td>
+                  <td data-ng-bind="timesheet.endTime "></td>
+                  <td  data-ng-bind= "timesheet.duration"></td>
+                  
+                <td > <input type="text" data-ng-model="timesheet.note"></td>
+                <td>
+                    <input type="button" value="Edit" class="btn btn-primary" ng-click="update(timesheet) "/>
+                </td>
+                <td>
+                    <input type="button" value="Remove" class="btn btn-primary" ng-click="remove(timesheet)"/>
+                </td>
+              </tr>
             </table>
-                <div class="form-group">
-                    <input type="submit" class="btn btn-default">
-                </div>
-				<div data-ng-show="error" class="text-danger">
-					<strong data-ng-bind="error"></strong>
-				</div>
-
-        </form>
-    </div>
+                
+</div>
 </section>

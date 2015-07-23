@@ -16,20 +16,7 @@
 	<meta name="keywords" content="{{keywords}}">
 	<meta name="description" content="{{description}}">
 
-	<!-- Facebook META -->
-	<meta property="fb:app_id" content="{{facebookAppId}}">
-	<meta property="og:site_name" content="{{title}}">
-	<meta property="og:title" content="{{title}}">
-	<meta property="og:description" content="{{description}}">
-	<meta property="og:url" content="{{url}}">
-	<meta property="og:image" content="/img/brand/logo.png">
-	<meta property="og:type" content="website">
 
-	<!-- Twitter META -->
-	<meta name="twitter:title" content="{{title}}">
-	<meta name="twitter:description" content="{{description}}">
-	<meta name="twitter:url" content="{{url}}">
-	<meta name="twitter:image" content="/img/brand/logo.png">
 
 	<!-- Fav Icon -->
 	<link href="/modules/core/img/brand/favicon.ico" rel="shortcut icon" type="image/x-icon">
@@ -58,11 +45,18 @@
 	</script>
 
 	<!--Application JavaScript Files-->
-	{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>{% endfor %} 
-		<script type="text/javascript" src="/lib/jquery/dist/jquery.js"></script>
-		<script type="text/javascript" src="/lib/moment/moment.js"></script>
+	{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>{% endfor %}
+        <script type="text/javascript" src="/lib/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="/lib/moment/moment.js"></script>
+        <script type="text/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+       <script type="text/javascript" src="/lib/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
+<!--        <script type="text/javascript" src="/lib/bootstrap-datepimepicker/build/js/bootstrap-datetimepicker.min.js"></script>		-->
+    <!--        <link rel="stylesheet" href="lib/bootstrap-datepimepicker/build/css/bootstrap-datetimepicker.min.css"/>-->
         <script type="text/javascript" src="/lib/fullcalendar/dist/fullcalendar.js"></script>
+    
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css"/>
         <link rel="stylesheet" href="/lib/fullcalendar/dist/fullcalendar.css"/>
+         <link rel="stylesheet" href="/lib/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
     <!-- jquery, moment, and angular have to get included before fullcalendar -->
   
 

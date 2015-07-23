@@ -54,7 +54,32 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 				$scope.submitted = true;
 			}
 		};
-
+		// Change user password
+		$scope.list = function() {
+            $http.get('/users/list').success(function(response) {
+				// If successful show success message and clear form
+                
+				$scope.users = response;
+			}).error(function(response) {
+                
+				$scope.error = response.message;
+			});
+        };
+		$scope.remove = function(user) {
+            $location.path('/usermaps/create');
+            /*
+            $http.post('/users/remove', user ).success(function(response) {
+				// If successful show success message and clear form
+                
+				$scope.users = response;
+                $location.path('/users/list');
+			}).error(function(response) {
+                
+				$scope.error = response.message;
+			});
+            */
+        };
+        
 		// Change user password
 		$scope.changeUserPassword = function() {
 			$scope.success = $scope.error = null;

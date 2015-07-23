@@ -5,36 +5,58 @@ angular.module('timesheets').controller('TimesheetsController', ['$scope', '$roo
 	function($scope, $rootScope, $stateParams, $location, Authentication, Timesheets) {
 		$scope.authentication = Authentication;
         
+        function compare(a,b) {
+              if (a.startTime < b.startTime)
+                return -1;
+              if (a.startTime > b.startTime)
+                return 1;
+              return 0;
+            }
+        
+        
+        
+        $rootScope.setupEventDay = function () {
+              
+            $rootScope.eventDay = [];
+            //Check if each record is of same day as the next one
+            for(var i = 0; i < $rootScope.gSheets.length; i++ )
+            {
+                     var event = $rootScope.gSheets[i];
+                    
+                     var day = moment(event.endTime).dayOfYear();
+                    if($rootScope.eventDay[day] === undefined) {
+                        $rootScope.eventDay[day] = [];
+                        $rootScope.eventDay[day] = $rootScope.gSheets[i].duration;
+                    } else {
+                         $rootScope.eventDay[day] += $rootScope.gSheets[i].duration;
+                    }                   
+            }     
+            
+        };
         
 		// Create new Timesheet
 		$scope.create = function(sheet) {
 			// Create new Timesheet object
-/*            
-            var start = new Date();
-            var end = new Date();
-            
-            
-			var timesheet = new Timesheets ({
-				name: this.name,
-                project:this.timesheet.project,
-                startTime:start,
-                endTime:end,
-                note:this.timesheet.note
-			});
-            */
+
+            var duration = moment(sheet.end).diff(moment(sheet.start), "hours")
             var timesheet = new Timesheets({
-                                    name:sheet.name, 
-                                    project:sheet.name,
-                                    startTime:sheet.startTime,
-                                    endTime:sheet.endTime,
-                                    note:sheet.note
+                                    
+                                    name:sheet.project,
+                                    startTime:moment(sheet.start).utc(),
+                                    endTime:moment(sheet.end).utc(),
+                                    duration: duration,
+                                    note:sheet.note,
                                     });
+            
+          
 
 			// Redirect after save
 			timesheet.$save(function(response) {
-				$location.path('timesheets/' + response._id);
-                    alert('success');
-				// Clear form fields
+			//	$location.path('timesheets/');
+                timesheet.user = Authentication.user;
+                $rootScope.gSheets.push(timesheet);
+                
+                $rootScope.setupEventDay();	
 				$scope.name = '';
 			}, function(errorResponse) {
                 alert('failure');
@@ -54,73 +76,37 @@ angular.module('timesheets').controller('TimesheetsController', ['$scope', '$roo
 				}
 			} else {
 				$scope.timesheet.$remove(function() {
-					$location.path('timesheets');
+				//	$location.path('timesheets');
 				});
 			}
 		};
 
 		// Update existing Timesheet
-		$scope.update = function() {
-			var timesheet = $scope.timesheet;
-
+		$scope.update = function(timesheet) {
+			
 			    timesheet.$update(function() {
-				$location.path('timesheets/' + timesheet._id);
+				//$location.path('timesheets/' + timesheet._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
-//Prepares/Populates dayEvents from dataSource (required to pass to fullcalendar)
- $rootScope.arrangeMomentsDate= function() {
 
-            console.log($rootScope.dataSource);                                            
-
-            var maxEvents = $rootScope.dataSource.length;
-            for(var i = 0; i < maxEvents; i++) {
-                var day = $rootScope.dataSource[i].end.dayOfYear();
-                var  tmp = $rootScope.dataSource[i];
-                if($rootScope.dayEvents[day] === undefined) {
-                    $rootScope.dayEvents[day] = [];
-                    $rootScope.dayEvents[day].push(tmp); 
-                   
-                }
-                else {
-                    $rootScope.dayEvents[day].push(tmp);
-                   
-                }   
-            }
-  
-            console.log($rootScope.dayEvents);
-
-    
-};
 		// Find a list of Timesheets
 		$scope.find = function() {
-			$scope.timesheets = Timesheets.query(function () {
-                
-                           $rootScope.dataSource = [];
-                            for (var i = 0; i < $scope.timesheets.length; i++) {
-                
-                            var tmp = $scope.timesheets[i];
-                            $scope.dataSource.push(
-                                            {
-                                                title:tmp.name,
-                                                start:moment(tmp.startTime),
-                                                end:moment(tmp.endTime),
-                                                
-                                            }
-                            );
-                           
-                        }                
-                    $rootScope.arrangeMomentsDate();
-                    $rootScope.calendar();
-            });            
+			$scope.timesheets = Timesheets.query(function(){
+                      $rootScope.gSheets = $scope.timesheets;
+                        console.log($rootScope.gSheets);
+                $rootScope.setupEventDay();
+                console.log($rootScope.eventDay);
+            }); 
+      
  
 		};
 
 		// Find existing Timesheet
 		$scope.findOne = function() {
 			$scope.timesheet = Timesheets.get({ 
-				timesheetId: $stateParams.timesheetId
+				                timesheetId: $stateParams.timesheetId
 			});
 		};
 	}

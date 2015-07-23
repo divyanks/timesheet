@@ -38,6 +38,9 @@ var TimesheetSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
+        duration: {
+        type:Number       
+    },
     
 	user: {
 		type: Schema.ObjectId,
@@ -46,3 +49,4 @@ var TimesheetSchema = new Schema({
 });
 
 mongoose.model('Timesheet', TimesheetSchema);
+

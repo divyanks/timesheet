@@ -1,0 +1,16 @@
+
+<section class="row" data-ng-controller="SettingsController" data-ng-init="list()">
+    
+     
+    		  <table class="table table-striped" >
+                  <tr   ng-repeat="user in users" >
+                      <td data-ng-bind="user.displayName"></td>        
+                      <td>
+                      
+                    </td>
+ 
+              </tr>
+            </table>
+            <input type="button" value="Manage" class="btn btn-primary" ng-click="remove(user) "/>
+    
+</section>

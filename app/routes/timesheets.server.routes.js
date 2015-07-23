@@ -1,4 +1,4 @@
-'use strict';
+    'use strict';
 
 module.exports = function(app) {
 	var users = require('../../app/controllers/users.server.controller');
@@ -6,12 +6,12 @@ module.exports = function(app) {
 
 	// Timesheets Routes
 	app.route('/timesheets')
-		.get(timesheets.list)
+		.get(users.requiresLogin, timesheets.list)
 		.post(users.requiresLogin, timesheets.create);
 
 	app.route('/timesheets/:timesheetId')
-		.get(timesheets.read)
-		.put(users.requiresLogin, timesheets.hasAuthorization, timesheets.update)
+		.get(users.requiresLogin,  timesheets.read)
+		.put(users.requiresLogin, timesheets.hasAuthorization,  timesheets.update)
 		.delete(users.requiresLogin, timesheets.hasAuthorization, timesheets.delete);
 
 	// Finish by binding the Timesheet middleware
